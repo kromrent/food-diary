@@ -32,4 +32,18 @@ public class UserController {
         User saved = userRepo.save(user);
         return UserMapper.toDto(saved);
     }
+    @PutMapping("/{id}")
+    public UserDto update(@PathVariable Long id, @RequestBody UserDto dto) {
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден: " + id));
+
+        user.setName(dto.getName());
+        User updated = userRepo.save(user);
+        return UserMapper.toDto(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        userRepo.deleteById(id);
+    }
 }

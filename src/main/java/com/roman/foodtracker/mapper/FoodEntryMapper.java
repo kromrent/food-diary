@@ -18,6 +18,7 @@ public class FoodEntryMapper {
 
     public static FoodEntryDto toDto(FoodEntry entry) {
         FoodEntryDto dto = new FoodEntryDto();
+        dto.setId(entry.getId());
         dto.setDate(entry.getDate());
         dto.setWeight(entry.getWeight());
         dto.setUserId(entry.getUser().getId());

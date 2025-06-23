@@ -33,4 +33,25 @@ public class ProductController {
         Product saved = productRepo.save(product);
         return ProductMapper.toDto(saved);
     }
+    
+
+    @PutMapping("/{id}")
+    public ProductDto update(@PathVariable Long id, @RequestBody ProductDto dto) {
+        Product product = productRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Продукт не найден: " + id));
+    
+        product.setName(dto.getName());
+        product.setCalories(dto.getCalories());
+        product.setProtein(dto.getProtein());
+        product.setFat(dto.getFat());
+        product.setCarbs(dto.getCarbs());
+
+        Product updated = productRepo.save(product);
+        return ProductMapper.toDto(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        productRepo.deleteById(id);
+    }
 }
