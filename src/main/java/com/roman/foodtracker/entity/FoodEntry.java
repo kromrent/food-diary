@@ -12,8 +12,8 @@ public class FoodEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double weight; // в граммах
-    private String date;   // YYYY-MM-DD (можно заменить на LocalDate)
+    private Double weight; 
+    private String date;   
 
     @ManyToOne
     @JoinColumn(name = "user_id")

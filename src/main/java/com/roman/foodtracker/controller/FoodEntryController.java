@@ -1,6 +1,6 @@
 package com.roman.foodtracker.controller;
 
-import com.roman.foodtracker.dto.FoodEntryDto;
+import com.roman.foodtracker.dto.foodentry.*;
 import com.roman.foodtracker.entity.FoodEntry;
 import com.roman.foodtracker.entity.Product;
 import com.roman.foodtracker.entity.User;
@@ -14,63 +14,44 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/entries")
+@RequestMapping("/api/food-entries")
 public class FoodEntryController {
 
     private final FoodEntryRepository entryRepo;
-    private final ProductRepository productRepo;
     private final UserRepository userRepo;
+    private final ProductRepository productRepo;
 
-    public FoodEntryController(FoodEntryRepository entryRepo,
-                               ProductRepository productRepo,
-                               UserRepository userRepo) {
+    public FoodEntryController(FoodEntryRepository entryRepo, UserRepository userRepo, ProductRepository productRepo) {
         this.entryRepo = entryRepo;
-        this.productRepo = productRepo;
         this.userRepo = userRepo;
+        this.productRepo = productRepo;
     }
 
     @GetMapping
-    public List<FoodEntryDto> getAll() {
-        return entryRepo.findAll()
-                .stream()
-                .map(FoodEntryMapper::toDto)
+    public List<FoodEntryResponse> getAll() {
+        return entryRepo.findAll().stream()
+                .map(FoodEntryMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
-    public FoodEntryDto create(@RequestBody FoodEntryDto dto) {
-        FoodEntry entry = new FoodEntry();
-        entry.setDate(dto.getDate());
-        entry.setWeight(dto.getWeight());
+    public FoodEntryResponse create(@RequestBody FoodEntryCreateRequest request) {
+        User user = userRepo.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+        Product product = productRepo.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Продукт не найден"));
 
-        Product product = productRepo.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException("Продукт не найден: " + dto.getProductId()));
-        User user = userRepo.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден: " + dto.getUserId()));
-
-        entry.setProduct(product);
-        entry.setUser(user);
-
-        return FoodEntryMapper.toDto(entryRepo.save(entry));
+        FoodEntry entry = FoodEntryMapper.toEntity(request, user, product);
+        return FoodEntryMapper.toResponse(entryRepo.save(entry));
     }
 
     @PutMapping("/{id}")
-    public FoodEntryDto update(@PathVariable Long id, @RequestBody FoodEntryDto dto) {
+    public FoodEntryResponse update(@PathVariable Long id, @RequestBody FoodEntryUpdateRequest request) {
         FoodEntry entry = entryRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Запись не найдена: " + id));
+                .orElseThrow(() -> new RuntimeException("Запись не найдена"));
 
-        entry.setDate(dto.getDate());
-        entry.setWeight(dto.getWeight());
-
-        Product product = productRepo.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException("Продукт не найден: " + dto.getProductId()));
-        User user = userRepo.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден: " + dto.getUserId()));
-
-        entry.setProduct(product);
-        entry.setUser(user);
-
-        return FoodEntryMapper.toDto(entryRepo.save(entry));
+        FoodEntryMapper.updateEntity(entry, request);
+        return FoodEntryMapper.toResponse(entryRepo.save(entry));
     }
 
     @DeleteMapping("/{id}")

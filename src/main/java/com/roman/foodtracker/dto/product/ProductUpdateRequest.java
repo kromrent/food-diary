@@ -1,10 +1,9 @@
-package com.roman.foodtracker.dto;
+package com.roman.foodtracker.dto.product;
 
 import lombok.Data;
 
 @Data
-public class ProductDto {
-    private Long id;
+public class ProductUpdateRequest {
     private String name;
     private Double calories;
     private Double protein;

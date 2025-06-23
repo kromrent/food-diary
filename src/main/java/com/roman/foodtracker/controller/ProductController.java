@@ -1,6 +1,6 @@
 package com.roman.foodtracker.controller;
 
-import com.roman.foodtracker.dto.ProductDto;
+import com.roman.foodtracker.dto.product.*;
 import com.roman.foodtracker.entity.Product;
 import com.roman.foodtracker.mapper.ProductMapper;
 import com.roman.foodtracker.repository.ProductRepository;
@@ -20,34 +20,26 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductDto> getAll() {
-        List<Product> products = productRepo.findAll();
-        return products.stream()
-                .map(ProductMapper::toDto)
+    public List<ProductResponse> getAll() {
+        return productRepo.findAll().stream()
+                .map(ProductMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
-    public ProductDto create(@RequestBody ProductDto dto) {
-        Product product = ProductMapper.toEntity(dto);
+    public ProductResponse create(@RequestBody ProductCreateRequest request) {
+        Product product = ProductMapper.toEntity(request);
         Product saved = productRepo.save(product);
-        return ProductMapper.toDto(saved);
+        return ProductMapper.toResponse(saved);
     }
-    
 
     @PutMapping("/{id}")
-    public ProductDto update(@PathVariable Long id, @RequestBody ProductDto dto) {
+    public ProductResponse update(@PathVariable Long id, @RequestBody ProductUpdateRequest request) {
         Product product = productRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Продукт не найден: " + id));
-    
-        product.setName(dto.getName());
-        product.setCalories(dto.getCalories());
-        product.setProtein(dto.getProtein());
-        product.setFat(dto.getFat());
-        product.setCarbs(dto.getCarbs());
+                .orElseThrow(() -> new RuntimeException("Продукт не найден: " + id));
 
-        Product updated = productRepo.save(product);
-        return ProductMapper.toDto(updated);
+        ProductMapper.updateProduct(product, request);
+        return ProductMapper.toResponse(productRepo.save(product));
     }
 
     @DeleteMapping("/{id}")

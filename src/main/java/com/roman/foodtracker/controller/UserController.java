@@ -1,6 +1,6 @@
 package com.roman.foodtracker.controller;
 
-import com.roman.foodtracker.dto.UserDto;
+import com.roman.foodtracker.dto.user.*;
 import com.roman.foodtracker.entity.User;
 import com.roman.foodtracker.mapper.UserMapper;
 import com.roman.foodtracker.repository.UserRepository;
@@ -20,26 +20,24 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDto> getAll() {
+    public List<UserResponse> getAll() {
         return userRepo.findAll().stream()
-                .map(UserMapper::toDto)
+                .map(UserMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
-    public UserDto create(@RequestBody UserDto dto) {
-        User user = UserMapper.toEntity(dto);
-        User saved = userRepo.save(user);
-        return UserMapper.toDto(saved);
+    public UserResponse create(@RequestBody UserCreateRequest request) {
+        User user = UserMapper.toEntity(request);
+        return UserMapper.toResponse(userRepo.save(user));
     }
+
     @PutMapping("/{id}")
-    public UserDto update(@PathVariable Long id, @RequestBody UserDto dto) {
+    public UserResponse update(@PathVariable Long id, @RequestBody UserUpdateRequest request) {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден: " + id));
-
-        user.setName(dto.getName());
-        User updated = userRepo.save(user);
-        return UserMapper.toDto(updated);
+        UserMapper.updateUser(user, request);
+        return UserMapper.toResponse(userRepo.save(user));
     }
 
     @DeleteMapping("/{id}")
