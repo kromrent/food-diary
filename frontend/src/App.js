@@ -1,7 +1,7 @@
-import React from "react";
-import ProductList from "./ProductList";
-import FoodEntryList from "./FoodEntryList"; 
-import FoodEntryForm from "./FoodEntryForm";
+/*import React from "react";
+import ProductList from "./components/ProductList";
+import FoodEntryList from "./components/FoodEntryList"; 
+import FoodEntryForm from "./components/FoodEntryForm";
 
 function App() {
   return (
@@ -10,6 +10,19 @@ function App() {
       <FoodEntryForm />
       <ProductList />
       <FoodEntryList /> 
+    </div>
+  );
+}
+
+export default App;*/
+import React from "react";
+import RegistrationForm from "./components/RegistrationForm";
+
+function App() {
+  return (
+    <div className="App">
+      <h1>Онлайн-дневник питания</h1>
+      <RegistrationForm />
     </div>
   );
 }
