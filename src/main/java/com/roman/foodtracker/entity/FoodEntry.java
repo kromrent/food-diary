@@ -2,6 +2,7 @@ package com.roman.foodtracker.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "food_entries")
@@ -13,7 +14,7 @@ public class FoodEntry {
     private Long id;
 
     private Double weight; 
-    private String date;   
+    private LocalDate date;  
 
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -9,4 +9,4 @@ public class FoodEntryDto {
     private String date;
     private Long productId;
     private Long userId;
-}
+}   
