@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const steps = [
-  "Имя и email",
+  "Имя",
   "Пол и возраст",
   "Рост и вес",
   "Активность",

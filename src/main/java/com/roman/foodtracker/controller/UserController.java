@@ -1,5 +1,6 @@
 package com.roman.foodtracker.controller;
 
+import com.roman.foodtracker.dto.MacroNutrientsDto;
 import com.roman.foodtracker.dto.user.UserCreateRequest;
 import com.roman.foodtracker.dto.user.UserResponse;
 import com.roman.foodtracker.dto.user.UserUpdateRequest;
@@ -30,7 +31,7 @@ public class UserController {
         return userRepo.findAll().stream()
             .map(user -> {
             UserResponse response = UserMapper.toResponse(user);
-            Map<String, Double> macros = userService.calculateMacros(user);
+            MacroNutrientsDto macros = userService.calculateMacros(user);
             response.setMacros(macros);
             return response;
         })
@@ -40,8 +41,8 @@ public class UserController {
     @PostMapping
     public UserResponse create(@RequestBody UserCreateRequest request) {
         User user = UserMapper.toEntity(request);
-        user = userRepo.save(user);
-        Map<String, Double> macros = userService.calculateMacros(user);
+        user = userService.createUser(user);
+        MacroNutrientsDto macros = userService.calculateMacros(user);
         UserResponse response = UserMapper.toResponse(user);
         response.setMacros(macros);
         return response;
@@ -55,7 +56,7 @@ public class UserController {
         UserMapper.updateUser(user, request);
         user = userRepo.save(user);
 
-        Map<String, Double> macros = userService.calculateMacros(user);
+        MacroNutrientsDto macros = userService.calculateMacros(user);
         UserResponse response = UserMapper.toResponse(user);
         response.setMacros(macros);
         return response;

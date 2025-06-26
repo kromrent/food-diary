@@ -20,7 +20,7 @@ function AddProductForm({ onAdd }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:8080/api/products", {
+    const response = await fetch("http://localhost:8080/api/products", { // создать папку api и туда перенести все связи посмотреть как с считать адрес сервера с енв файла
       method: "POST",
       headers: {
         "Content-Type": "application/json",
