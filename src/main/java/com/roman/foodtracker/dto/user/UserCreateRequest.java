@@ -13,14 +13,13 @@ public class UserCreateRequest {
     private int age;
     @Min(50)
     @Max(250)
-    private double height; // в см
-    @Min(20)
+    private double height; 
     @Max(500)
-    private double weight; // в кг
+    private double weight; 
     @NotBlank
     private String password;
     @NotNull
-    private Gender gender; // enum Gender { MALE, FEMALE }
+    private Gender gender; 
     @NotBlank
     @Email
     private String email;

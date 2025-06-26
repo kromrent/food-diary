@@ -8,6 +8,9 @@ import com.roman.foodtracker.entity.User;
 import com.roman.foodtracker.mapper.UserMapper;
 import com.roman.foodtracker.repository.UserRepository;
 import com.roman.foodtracker.service.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,15 +41,7 @@ public class UserController {
         .collect(Collectors.toList());
 }
 
-    @PostMapping
-    public UserResponse create(@RequestBody UserCreateRequest request) {
-        User user = UserMapper.toEntity(request);
-        user = userService.createUser(user);
-        MacroNutrientsDto macros = userService.calculateMacros(user);
-        UserResponse response = UserMapper.toResponse(user);
-        response.setMacros(macros);
-        return response;
-    }
+
 
     @PutMapping("/{id}")
         public UserResponse update(@PathVariable Long id, @RequestBody UserUpdateRequest request) {
@@ -65,5 +60,14 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         userRepo.deleteById(id);
+    }
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userRepo.findByEmail(userDetails.getUsername())
+                            .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+
+        UserResponse response = UserMapper.toResponse(user);
+        response.setMacros(userService.calculateMacros(user));
+        return ResponseEntity.ok(response);
     }
 }
