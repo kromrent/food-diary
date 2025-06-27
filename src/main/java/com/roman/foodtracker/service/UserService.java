@@ -22,7 +22,7 @@ public class UserService {
        
         double bmr = 10 * user.getWeight() + 6.25 * user.getHeight() - 5 * user.getAge();
         
-        if (user.getGender() == Gender.MALE)  {//проверить через ==
+        if (user.getGender() == Gender.MALE)  {
             bmr = bmr + 5;
         } else {
             bmr = bmr - 161;

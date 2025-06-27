@@ -9,6 +9,8 @@ import com.roman.foodtracker.repository.FoodEntryRepository;
 import com.roman.foodtracker.repository.ProductRepository;
 import com.roman.foodtracker.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +35,15 @@ public class FoodEntryController {
                 .map(FoodEntryMapper::toResponse)
                 .collect(Collectors.toList());
     }
+    @GetMapping("/me")
+        public List<FoodEntryResponse> getMyEntries(@AuthenticationPrincipal UserDetails userDetails) {
+            User user = userRepo.findByEmail(userDetails.getUsername())
+                                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+
+            return entryRepo.findByUserId(user.getId()).stream()
+                    .map(FoodEntryMapper::toResponse)
+                    .collect(Collectors.toList());
+        }
 
     @PostMapping
     public FoodEntryResponse create(@RequestBody FoodEntryCreateRequest request) {
@@ -44,6 +55,8 @@ public class FoodEntryController {
         FoodEntry entry = FoodEntryMapper.toEntity(request, user, product);
         return FoodEntryMapper.toResponse(entryRepo.save(entry));
     }
+
+    
 
     @PutMapping("/{id}")
     public FoodEntryResponse update(@PathVariable Long id, @RequestBody FoodEntryUpdateRequest request) {

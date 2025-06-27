@@ -1,4 +1,4 @@
-// src/main/java/com/roman/foodtracker/dto/user/UserResponse.java
+
 package com.roman.foodtracker.dto.user;
 
 import lombok.Data;

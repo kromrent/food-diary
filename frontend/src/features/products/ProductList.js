@@ -1,11 +1,11 @@
-// frontend/src/ProductList.js
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
 
-  // Получаем данные при загрузке компонента
+ 
   useEffect(() => {
     axios.get("http://localhost:8080/api/products")
       .then(response => {
@@ -46,7 +46,7 @@ const ProductList = () => {
   useEffect(() => {
   axios.get("http://localhost:8080/api/products")
     .then(response => {
-      console.log("Получено:", response.data); // 👈 добавь это
+      console.log("Получено:", response.data); 
       setProducts(response.data);
     })
     .catch(error => {

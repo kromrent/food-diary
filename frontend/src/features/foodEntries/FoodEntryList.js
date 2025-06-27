@@ -1,22 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useContext } from 'react';
+import { FoodEntryContext } from "../context/FoodEntryContext";
 
 function FoodEntryList() {
-  const [entries, setEntries] = useState([]);
-
-  useEffect(() => {
-    axios.get("http://localhost:8080/api/food-entries")
-      .then(response => setEntries(response.data))
-      .catch(error => console.error("Ошибка при получении записей:", error));
-  }, []);
+  const { entries } = useContext(FoodEntryContext);
 
   return (
     <div>
-      <h2>Записи питания</h2>
+      <h2>Ваши записи</h2>
       <table>
         <thead>
           <tr>
-            <th>Пользователь</th>
             <th>Продукт</th>
             <th>Вес (г)</th>
             <th>Дата</th>
@@ -25,7 +18,6 @@ function FoodEntryList() {
         <tbody>
           {entries.map((entry) => (
             <tr key={entry.id}>
-              <td>{entry.userName}</td>
               <td>{entry.productName}</td>
               <td>{entry.weight}</td>
               <td>{entry.date}</td>
